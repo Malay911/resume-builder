@@ -132,7 +132,6 @@ const ResumeBuilder = () => {
     try {
       let updatedResumeData=structuredClone(resumeData)
 
-      //remove image from updatedResumeData
       if(typeof resumeData.personal_info.image==='object'){
         delete updatedResumeData.personal_info.image
       }
