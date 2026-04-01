@@ -89,7 +89,7 @@ export const updateResume=async(req,res)=>{
                 file: imageBufferData,
                 fileName: 'resume.png',
                 folder: 'user-resumes',
-                transformations: {
+                transformation: {
                     pre: 'w-300,h-300,fo-face,z-0.75' + (removeBackground ? ',e-bgremove' : '')
                 }
               });
