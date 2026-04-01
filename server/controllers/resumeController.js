@@ -94,8 +94,21 @@ export const updateResume=async(req,res)=>{
                 }
               });
             resumeDataCopy.personal_info.image=response.url;
+            // Clean up temp file
+            fs.unlink(image.path, () => {});
+        } else if(removeBackground && resumeDataCopy.personal_info?.image){
+            // Re-upload existing image URL with background removal
+            const response = await imagekit.files.upload({
+                file: resumeDataCopy.personal_info.image,
+                fileName: 'resume.png',
+                folder: 'user-resumes',
+                transformation: {
+                    pre: 'w-300,h-300,fo-face,z-0.75,e-bgremove'
+                }
+            });
+            resumeDataCopy.personal_info.image=response.url;
         }
-        const resume=await Resume.findByIdAndUpdate({userId,_id:resumeId},resumeDataCopy,{new:true});
+        const resume=await Resume.findOneAndUpdate({userId,_id:resumeId},resumeDataCopy,{new:true});
         return res.status(200).json({message:"Resume updated successfully",resume});
     } catch (error) {
         return res.status(400).json({message:error.message});
