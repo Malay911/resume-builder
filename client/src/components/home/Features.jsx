@@ -1,57 +1,124 @@
-import { Zap } from 'lucide-react';
-import React from 'react'
-import Title from './Title';
+import React from 'react';
+import { motion } from 'framer-motion';
+import { Sparkles, Layout, MonitorSmartphone, Download, ShieldCheck, Zap } from 'lucide-react';
 
 const Features = () => {
-    const [isHover, setIsHover] = React.useState(false);
+    const containerVariants = {
+        hidden: { opacity: 0 },
+        visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
+    };
+
+    const cardVariants = {
+        hidden: { opacity: 0, y: 30 },
+        visible: { opacity: 1, y: 0, transition: { duration: 0.5 } }
+    };
+
+    const features = [
+        {
+            icon: <Sparkles className="size-6" />,
+            title: "AI-Powered Suggestions",
+            description: "Instantly enhance your job descriptions with smart AI that highlights your specific accomplishments.",
+            accent: 'linear-gradient(135deg, #3b82f6, #8b5cf6)',
+            glow: 'rgba(99,102,241,0.15)',
+        },
+        {
+            icon: <MonitorSmartphone className="size-6" />,
+            title: "Real-Time Preview",
+            description: "Watch your resume update instantly as you type. What you see is exactly what recruiters will see.",
+            accent: 'linear-gradient(135deg, #06b6d4, #3b82f6)',
+            glow: 'rgba(6,182,212,0.15)',
+        },
+        {
+            icon: <Layout className="size-6" />,
+            title: "Premium Templates",
+            description: "Choose from a curated selection of field-tested templates designed by actual technical recruiters.",
+            accent: 'linear-gradient(135deg, #10b981, #06b6d4)',
+            glow: 'rgba(16,185,129,0.12)',
+        },
+        {
+            icon: <Download className="size-6" />,
+            title: "One-Click Export",
+            description: "Download your pixel-perfect resume as a PDF instantly, ready to bypass Applicant Tracking Systems.",
+            accent: 'linear-gradient(135deg, #f59e0b, #ef4444)',
+            glow: 'rgba(245,158,11,0.12)',
+        },
+        {
+            icon: <ShieldCheck className="size-6" />,
+            title: "ATS-Optimized Parsing",
+            description: "Our machine-readable layouts guarantee your resume gets parsed correctly by sorting algorithms.",
+            accent: 'linear-gradient(135deg, #3b82f6, #06b6d4)',
+            glow: 'rgba(59,130,246,0.12)',
+        },
+        {
+            icon: <Zap className="size-6" />,
+            title: "Lightning Fast Editing",
+            description: "Skip the formatting struggles. Our form-based editor builds beautiful layouts automatically.",
+            accent: 'linear-gradient(135deg, #ec4899, #8b5cf6)',
+            glow: 'rgba(236,72,153,0.12)',
+        }
+    ];
+
     return (
-        <div id='features' className='flex flex-col items-center my-10 scroll-mt-12'>
-            <div className="flex items-center gap-2 text-sm text-green-600 bg-green-400/10 rounded-full px-6 py-1.5">
-            <Zap width={14}/>
-            <span>Simple Process</span>
-        </div>
-        <Title title='Build your resume' description='Our streamlined process helps you create a professionl resume in minutes with intelligent AI-powered tools and features.'/>
-            <div className="flex flex-col md:flex-row items-center xl:mt-10">
-                <img className="max-w-2xl w-full xl:-ml-32" src="https://raw.githubusercontent.com/prebuiltui/prebuiltui/main/assets/features/group-image-1.png" alt="" />
-                <div className="px-4 md:px-0" onMouseEnter={() => setIsHover(true)} onMouseLeave={() => setIsHover(false)}>
-                    <div className={"flex items-center justify-center gap-6 max-w-md group cursor-pointer"}>
-                        <div className={`p-6 group-hover:bg-violet-100 border border-transparent group-hover:border-violet-300  flex gap-4 rounded-xl transition-colors ${!isHover ? 'border-violet-300 bg-violet-100' : ''}`}>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="size-6 stroke-violet-600"><path d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z" /><circle cx="16.5" cy="7.5" r=".5" fill="currentColor" /></svg>
-                            <div className="space-y-2">
-                                <h3 className="text-base font-semibold text-slate-700">Real-Time Analytics</h3>
-                                <p className="text-sm text-slate-600 max-w-xs">Get instant insights into your finances with live dashboards.</p>
+        <div id="features" className="py-24 bg-white relative overflow-hidden">
+            {/* Subtle grid */}
+            <div className="absolute inset-0 pointer-events-none"
+                style={{
+                    backgroundImage: `linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px)`,
+                    backgroundSize: '44px 44px'
+                }}
+            />
+
+            <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: "-100px" }}
+                    transition={{ duration: 0.6 }}
+                    className="text-center max-w-3xl mx-auto mb-16"
+                >
+                    {/* Gradient badge */}
+                    <span className="badge-accent mb-4">Features</span>
+                    <h2 className="text-3xl md:text-5xl font-extrabold text-black tracking-tight mb-6 mt-4">
+                        Everything you need to <span className="text-transparent bg-clip-text" style={{ backgroundImage: 'linear-gradient(135deg,#3b82f6,#8b5cf6)' }}>stand out.</span>
+                    </h2>
+                    <p className="text-lg text-neutral-500 leading-relaxed font-medium">
+                        We've removed the formatting headaches so you can focus strictly on what matters: your actual experience and achievements.
+                    </p>
+                </motion.div>
+
+                <motion.div
+                    className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
+                    variants={containerVariants}
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true, margin: "-50px" }}
+                >
+                    {features.map((feature, index) => (
+                        <motion.div key={index} variants={cardVariants} className="group relative">
+                            <div className="h-full p-8 rounded-2xl bg-white border border-neutral-100 shadow-sm transition-all duration-300 transform group-hover:-translate-y-2 group-hover:shadow-xl relative z-10 overflow-hidden"
+                                style={{ '--glow': feature.glow }}
+                            >
+                                {/* Soft glow on hover */}
+                                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl pointer-events-none"
+                                    style={{ background: `radial-gradient(circle at top left, ${feature.glow} 0%, transparent 60%)` }}
+                                />
+                                {/* Gradient icon container */}
+                                <div className="size-14 rounded-xl flex items-center justify-center mb-6 transition-all duration-300 relative z-10"
+                                    style={{ background: `linear-gradient(135deg, ${feature.glow.replace('0.15', '0.10').replace('0.12', '0.08')}, rgba(0,0,0,0.03))`, border: '1px solid rgba(0,0,0,0.05)' }}
+                                >
+                                    <div style={{ background: feature.accent, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
+                                        {feature.icon}
+                                    </div>
+                                </div>
+                                <h3 className="text-xl font-bold text-black mb-3 relative z-10">{feature.title}</h3>
+                                <p className="text-sm text-neutral-500 leading-relaxed font-medium relative z-10">{feature.description}</p>
                             </div>
-                        </div>
-                    </div>
-                    <div className="flex items-center justify-center gap-6 max-w-md group cursor-pointer">
-                        <div className="p-6 group-hover:bg-green-100 border border-transparent group-hover:border-green-300 flex gap-4 rounded-xl transition-colors">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="size-6 stroke-green-600"><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" /><path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z" /></svg>
-                            <div className="space-y-2">
-                                <h3 className="text-base font-semibold text-slate-700">Bank-Grade Security</h3>
-                                <p className="text-sm text-slate-600 max-w-xs">End-to-end encryption, 2FA, compliance with GDPR standards.</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="flex items-center justify-center gap-6 max-w-md group cursor-pointer">
-                        <div className="p-6 group-hover:bg-orange-100 border border-transparent group-hover:border-orange-300 flex gap-4 rounded-xl transition-colors">
-                            <svg className="size-6 stroke-orange-600" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 15V3" /><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><path d="m7 10 5 5 5-5" /></svg>
-                            <div className="space-y-2">
-                                <h3 className="text-base font-semibold text-slate-700">Customizable Reports</h3>
-                                <p className="text-sm text-slate-600 max-w-xs">Export professional, audit-ready financial reports for tax or internal review.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                        </motion.div>
+                    ))}
+                </motion.div>
             </div>
-            <style>{`
-                @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
-            
-                * {
-                    font-family: 'Poppins', sans-serif;
-                }
-            `}</style>
         </div>
     );
-}
+};
 
-export default Features
+export default Features;

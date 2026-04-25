@@ -6,20 +6,17 @@ import Loader from '../components/Loader'
 import Login from './Login'
 
 const Layout = () => {
-
-  const {user, loading}=useSelector((state)=>state.auth)
-  if(loading) return <Loader />
+  const { user, loading } = useSelector((state) => state.auth)
+  if (loading) return <Loader />
 
   return (
     <div>
-      {
-        user ? (
-          <div className='min-h screen bg-gray-50'>
-            <Navbar/>
-            <Outlet/>
+      {user ? (
+        <div className='min-h-screen' style={{ background: 'var(--bg-body)' }}>
+          <Navbar />
+          <Outlet />
         </div>
-        ) : <Login />
-      }
+      ) : <Login />}
     </div>
   )
 }

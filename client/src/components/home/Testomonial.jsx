@@ -1,95 +1,175 @@
-import React from 'react'
-import Title from './Title'
-import { BookUserIcon } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Star, ChevronLeft, ChevronRight, Quote } from 'lucide-react';
 
-const Testomonial = () => {
-
-    const cardsData = [
+const Testimonial = () => {
+    const testimonials = [
         {
-            image: 'https://images.unsplash.com/photo-1633332755192-727a05c4013d?q=80&w=200',
-            name: 'Briar Martin',
-            handle: '@neilstellar',
+            name: "Sarah Jenkins",
+            role: "Software Engineer at Google",
+            avatar: "https://i.pravatar.cc/150?img=47",
+            content: "I was struggling to get callbacks with my old resume. After using ResumeAI's suggestions and switching to the Modern template, I landed three interviews in one week.",
+            rating: 5,
+            accent: 'linear-gradient(135deg, #3b82f6, #8b5cf6)',
+            badge: 'rgba(59,130,246,0.12)',
         },
         {
-            image: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=200',
-            name: 'Avery Johnson',
-            handle: '@averywrites',
+            name: "Michael Chen",
+            role: "Product Manager at Stripe",
+            avatar: "https://i.pravatar.cc/150?img=11",
+            content: "The AI parsing feature is incredible. It completely rewrote my bulky experience section into punchy, metric-driven bullet points that recruiters actually read.",
+            rating: 5,
+            accent: 'linear-gradient(135deg, #8b5cf6, #ec4899)',
+            badge: 'rgba(139,92,246,0.12)',
         },
         {
-            image: 'https://images.unsplash.com/photo-1527980965255-d3b416303d12?w=200&auto=format&fit=crop&q=60',
-            name: 'Jordan Lee',
-            handle: '@jordantalks',
+            name: "Emily Rodriguez",
+            role: "UX Designer at Canva",
+            avatar: "https://i.pravatar.cc/150?img=5",
+            content: "As a designer, I'm extremely picky about layouts. The templates here aren't just ATS-friendly; they're genuinely beautiful and perfectly spaced. Saved me hours.",
+            rating: 5,
+            accent: 'linear-gradient(135deg, #10b981, #06b6d4)',
+            badge: 'rgba(16,185,129,0.12)',
         },
         {
-            image: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=200&auto=format&fit=crop&q=60',
-            name: 'Avery Johnson',
-            handle: '@averywrites',
-        },
+            name: "David Kim",
+            role: "Data Scientist at Amazon",
+            avatar: "https://i.pravatar.cc/150?img=33",
+            content: "The live preview makes editing so fast. I created tailored resumes for different roles in minutes instead of manually formatting Word documents.",
+            rating: 4,
+            accent: 'linear-gradient(135deg, #06b6d4, #3b82f6)',
+            badge: 'rgba(6,182,212,0.12)',
+        }
     ];
 
-    const CreateCard = ({ card }) => (
-        <div className="p-4 rounded-lg mx-4 shadow hover:shadow-lg transition-all duration-200 w-72 shrink-0">
-            <div className="flex gap-2">
-                <img className="size-11 rounded-full" src={card.image} alt="User Image" />
-                <div className="flex flex-col">
-                    <div className="flex items-center gap-1">
-                        <p>{card.name}</p>
-                        <svg className="mt-0.5 fill-green-500" width="12" height="12" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
-                            <path fillRule="evenodd" clipRule="evenodd" d="M4.555.72a4 4 0 0 1-.297.24c-.179.12-.38.202-.59.244a4 4 0 0 1-.38.041c-.48.039-.721.058-.922.129a1.63 1.63 0 0 0-.992.992c-.071.2-.09.441-.129.922a4 4 0 0 1-.041.38 1.6 1.6 0 0 1-.245.59 3 3 0 0 1-.239.297c-.313.368-.47.551-.56.743-.213.444-.213.96 0 1.404.09.192.247.375.56.743.125.146.187.219.24.297.12.179.202.38.244.59.018.093.026.189.041.38.039.48.058.721.129.922.163.464.528.829.992.992.2.071.441.09.922.129.191.015.287.023.38.041.21.042.411.125.59.245.078.052.151.114.297.239.368.313.551.47.743.56.444.213.96.213 1.404 0 .192-.09.375-.247.743-.56.146-.125.219-.187.297-.24.179-.12.38-.202.59-.244a4 4 0 0 1 .38-.041c.48-.039.721-.058.922-.129.464-.163.829-.528.992-.992.071-.2.09-.441.129-.922a4 4 0 0 1 .041-.38c.042-.21.125-.411.245-.59.052-.078.114-.151.239-.297.313-.368.47-.551.56-.743.213-.444.213-.96 0-1.404-.09-.192-.247-.375-.56-.743a4 4 0 0 1-.24-.297 1.6 1.6 0 0 1-.244-.59 3 3 0 0 1-.041-.38c-.039-.48-.058-.721-.129-.922a1.63 1.63 0 0 0-.992-.992c-.2-.071-.441-.09-.922-.129a4 4 0 0 1-.38-.041 1.6 1.6 0 0 1-.59-.245A3 3 0 0 1 7.445.72C7.077.407 6.894.25 6.702.16a1.63 1.63 0 0 0-1.404 0c-.192.09-.375.247-.743.56m4.07 3.998a.488.488 0 0 0-.691-.69l-2.91 2.91-.958-.957a.488.488 0 0 0-.69.69l1.302 1.302c.19.191.5.191.69 0z" />
-                        </svg>
+    const [currentIndex, setCurrentIndex] = useState(0);
+    const [isHovered, setIsHovered] = useState(false);
+    const current = testimonials[currentIndex];
+
+    useEffect(() => {
+        if (isHovered) return;
+        const interval = setInterval(() => {
+            setCurrentIndex((prev) => (prev + 1) % testimonials.length);
+        }, 5000);
+        return () => clearInterval(interval);
+    }, [isHovered, testimonials.length]);
+
+    const nextSlide = () => setCurrentIndex((prev) => (prev + 1) % testimonials.length);
+    const prevSlide = () => setCurrentIndex((prev) => (prev - 1 + testimonials.length) % testimonials.length);
+
+    return (
+        <div id="testimonials" className="py-24 bg-white relative overflow-hidden">
+            {/* Subtle colored blob */}
+            <div className="absolute top-[20%] right-[-10%] w-[40%] h-[60%] rounded-full pointer-events-none blur-[120px]"
+                style={{ background: 'radial-gradient(circle, rgba(139,92,246,0.07) 0%, transparent 70%)' }}
+            />
+
+            <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.6 }}
+                    className="text-center max-w-3xl mx-auto mb-16"
+                >
+                    <span className="badge-accent mb-4">Success Stories</span>
+                    <h2 className="text-3xl md:text-5xl font-extrabold text-black tracking-tight mb-6 mt-4">
+                        Don't just take <span className="text-transparent bg-clip-text" style={{ backgroundImage: 'linear-gradient(135deg,#8b5cf6,#ec4899)' }}>our word for it.</span>
+                    </h2>
+                </motion.div>
+
+                <div
+                    className="relative max-w-4xl mx-auto"
+                    onMouseEnter={() => setIsHovered(true)}
+                    onMouseLeave={() => setIsHovered(false)}
+                >
+                    {/* Controls */}
+                    <button
+                        onClick={prevSlide}
+                        className="absolute left-0 md:-left-6 top-1/2 -translate-y-1/2 z-20 p-3 bg-white border border-neutral-100 rounded-full shadow-md text-neutral-400 hover:text-black hover:border-black hover:scale-110 transition-all focus:outline-none"
+                    >
+                        <ChevronLeft className="size-6" />
+                    </button>
+
+                    <button
+                        onClick={nextSlide}
+                        className="absolute right-0 md:-right-6 top-1/2 -translate-y-1/2 z-20 p-3 bg-white border border-neutral-100 rounded-full shadow-md text-neutral-400 hover:text-black hover:border-black hover:scale-110 transition-all focus:outline-none"
+                    >
+                        <ChevronRight className="size-6" />
+                    </button>
+
+                    {/* Carousel */}
+                    <div className="overflow-hidden px-4 md:px-12 py-8">
+                        <AnimatePresence mode="wait">
+                            <motion.div
+                                key={currentIndex}
+                                initial={{ opacity: 0, x: 50 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                exit={{ opacity: 0, x: -50 }}
+                                transition={{ duration: 0.4, ease: "easeInOut" }}
+                                className="bg-white rounded-3xl p-8 md:p-12 shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-neutral-100 relative group overflow-hidden"
+                            >
+                                {/* Accent glow top-right on current testimonial */}
+                                <div className="absolute top-0 right-0 w-48 h-48 rounded-full blur-3xl opacity-60 pointer-events-none"
+                                    style={{ background: current.badge.replace('0.12', '0.25') }}
+                                />
+                                <Quote className="absolute top-8 right-8 size-16 text-neutral-100 opacity-80" />
+
+                                <div className="flex flex-col md:flex-row gap-8 items-center md:items-start relative z-10">
+                                    <div className="flex-shrink-0 relative">
+                                        <img
+                                            src={current.avatar}
+                                            alt={current.name}
+                                            className="size-20 md:size-24 rounded-full shadow-md object-cover border-4 border-transparent"
+                                            style={{ boxShadow: `0 0 0 4px ${current.badge}` }}
+                                        />
+                                        {/* Gradient "Hired" badge */}
+                                        <div className="absolute -bottom-2 -right-2 text-white text-[10px] font-bold px-2 py-1 rounded-full shadow-sm flex items-center gap-1"
+                                            style={{ background: current.accent }}>
+                                            Hired
+                                        </div>
+                                    </div>
+
+                                    <div className="flex-1 text-center md:text-left">
+                                        <div className="flex justify-center md:justify-start gap-1 mb-4">
+                                            {[...Array(current.rating)].map((_, i) => (
+                                                <Star key={i} className="size-5 fill-amber-400 text-amber-400" />
+                                            ))}
+                                        </div>
+                                        <p className="text-xl md:text-2xl font-medium text-black leading-relaxed mb-6 italic">
+                                            "{current.content}"
+                                        </p>
+                                        <div>
+                                            <h4 className="text-lg font-bold text-black">{current.name}</h4>
+                                            <p className="text-sm font-semibold text-transparent bg-clip-text"
+                                                style={{ backgroundImage: current.accent }}>
+                                                {current.role}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </motion.div>
+                        </AnimatePresence>
                     </div>
-                    <span className="text-xs text-slate-500">{card.handle}</span>
+
+                    {/* Dots — gradient active */}
+                    <div className="flex justify-center gap-2 mt-4">
+                        {testimonials.map((t, index) => (
+                            <button
+                                key={index}
+                                onClick={() => setCurrentIndex(index)}
+                                className="transition-all duration-300 rounded-full h-1.5"
+                                style={{
+                                    width: currentIndex === index ? '2rem' : '0.5rem',
+                                    background: currentIndex === index ? t.accent : '#e5e5e5'
+                                }}
+                            />
+                        ))}
+                    </div>
                 </div>
             </div>
-            <p className="text-sm py-4 text-gray-800">Radiant made undercutting all of our competitors an absolute breeze.</p>
         </div>
     );
+};
 
-  return (
-    <>
-    <div id='testimonials' className='flex flex-col items-center my-10 scroll-mt-12'>
-        <div className="flex items-center gap-2 text-sm text-green-600 bg-green-400/10 rounded-full px-6 py-1.5">
-            <BookUserIcon className='size-4.5 stroke-green-600'/>
-            <span>Testimonials</span>
-        </div>
-        <Title title="Don't just take our words" description="Hear what our userssay about us.We're always looking for ways to improve. If you have a positive experience with us, leave a review."/>
-    </div>
-
-<div className="marquee-row w-full mx-auto max-w-5xl overflow-hidden relative">
-<div className="absolute left-0 top-0 h-full w-20 z-10 pointer-events-none bg-gradient-to-r from-white to-transparent"></div>
-<div className="marquee-inner flex transform-gpu min-w-[200%] pt-10 pb-5">
-    {[...cardsData, ...cardsData].map((card, index) => (
-        <CreateCard key={index} card={card} />
-    ))}
-</div>
-<div className="absolute right-0 top-0 h-full w-20 md:w-40 z-10 pointer-events-none bg-gradient-to-l from-white to-transparent"></div>
-</div>
-
-<div className="marquee-row w-full mx-auto max-w-5xl overflow-hidden relative">
-<div className="absolute left-0 top-0 h-full w-20 z-10 pointer-events-none bg-gradient-to-r from-white to-transparent"></div>
-<div className="marquee-inner marquee-reverse flex transform-gpu min-w-[200%] pt-10 pb-5">
-    {[...cardsData, ...cardsData].map((card, index) => (
-        <CreateCard key={index} card={card} />
-    ))}
-</div>
-<div className="absolute right-0 top-0 h-full w-20 md:w-40 z-10 pointer-events-none bg-gradient-to-l from-white to-transparent"></div>
-</div>
-<style>{`
-            @keyframes marqueeScroll {
-                0% { transform: translateX(0%); }
-                100% { transform: translateX(-50%); }
-            }
-
-            .marquee-inner {
-                animation: marqueeScroll 25s linear infinite;
-            }
-
-            .marquee-reverse {
-                animation-direction: reverse;
-            }
-        `}</style>
-    </>
-  )
-}
-
-export default Testomonial
+export default Testimonial;

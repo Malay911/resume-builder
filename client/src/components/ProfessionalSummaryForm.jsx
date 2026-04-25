@@ -4,43 +4,58 @@ import { useSelector } from 'react-redux'
 import api from '../configs/api'
 import toast from 'react-hot-toast'
 
-const ProfessionalSummaryForm = ({data, onChange, setResumeData}) => {
+const ProfessionalSummaryForm = ({ data, onChange, setResumeData }) => {
+    const { token } = useSelector(state => state.auth)
+    const [isGenerating, setIsGenerating] = useState(false)
+    const charCount = data?.length || 0
 
-    const{token} =useSelector(state=>state.auth)
-    const [isGenerating,setIsGenerating]=useState(false)
-    const generateSummary=async()=>{
+    const generateSummary = async () => {
         try {
             setIsGenerating(true)
-            const prompt=`Enhance my professional summary "${data}"`
-            const response=await api.post('/api/ai/enhance-pro-sum',{userContent:prompt},{headers:{Authorization:token}})
+            const prompt = `Enhance my professional summary "${data}"`
+            const response = await api.post('/api/ai/enhance-pro-sum', { userContent: prompt }, { headers: { Authorization: token } })
             onChange(response.data.enhancedContent)
-            toast.success('Summary enhanced successfully!')
+            toast.success('Summary enhanced!')
         } catch (error) {
-            toast.error(error?.response?.data?.message || error.message)
-        }
-        finally{
+            toast.error(error?.response?.data?.message || 'Failed to enhance summary')
+        } finally {
             setIsGenerating(false)
         }
     }
-  return (
-    <div className='space y-4'>
-        <div className='flex items-center justify-between'>
-            <div>
-                <h3 className='flex item-center gap-2 text-lg gont-semibold text-gray-900'>Professional Summary</h3>
-                <p className='text-sm text-gray-500'>Add summary for resume here</p>
-            </div>
-            <button disabled={isGenerating} onClick={ generateSummary} className='flex items-center gap-2 text-sm text-purple-700 px-3 py-1 bg-purple-100 rounded hover:bg-purple-200 transition-colors disabled:opacity-50'>
-                {isGenerating?(<Loader2 className='size-4 animate-spin'/>):(<Sparkles className='size-4'/>)}
-                {isGenerating?"Enhancing...":"AI Enhance"}
-            </button>
-        </div>
 
-        <div className='mt-6'>
-            <textarea rows={7} value={data||""} onChange={(e)=>onChange(e.target.value)} className='w-full p-3 px-4 mt-2 border text-sm border-gray-300 rounded-lg focus:ring focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors resize-none' placeholder='Write a compelling professional summary that highlights your key strengths and career objectives...'/>
-            <p className='text-xs text-gray-500 max-w-4/5 max-auto text-center'>Tip: Keep it consise (3-4 sentences) and focus on your most relevant achievements and skills.</p>
+    return (
+        <div className='space-y-4'>
+            <div className='flex items-center justify-between'>
+                <p className='text-sm text-slate-500'>A compelling summary of your professional background</p>
+                <button
+                    disabled={isGenerating || !data}
+                    onClick={generateSummary}
+                    className='flex items-center gap-1.5 text-[11px] font-semibold text-purple-600 px-3 py-1.5 bg-purple-50 rounded-lg hover:bg-purple-100 transition-colors disabled:opacity-40'
+                >
+                    {isGenerating ? <Loader2 className='size-3.5 animate-spin' /> : <Sparkles className='size-3.5' />}
+                    {isGenerating ? "Enhancing..." : "Enhance with AI"}
+                </button>
+            </div>
+
+            <div className="relative">
+                <textarea
+                    rows={6}
+                    value={data || ""}
+                    onChange={(e) => onChange(e.target.value)}
+                    className='w-full px-4 py-3 text-sm'
+                    placeholder='Write a professional summary highlighting your key strengths, experience, and career goals...'
+                />
+                <div className="flex items-center justify-between mt-1.5">
+                    <p className='text-[11px] text-slate-400'>
+                        💡 Keep it concise — 3-4 sentences covering your strongest qualifications.
+                    </p>
+                    <span className={`text-[11px] font-medium ${charCount > 500 ? 'text-amber-500' : 'text-slate-400'}`}>
+                        {charCount}/500
+                    </span>
+                </div>
+            </div>
         </div>
-    </div>
-  )
+    )
 }
 
 export default ProfessionalSummaryForm
