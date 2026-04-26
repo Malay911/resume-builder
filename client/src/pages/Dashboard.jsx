@@ -8,6 +8,7 @@ import pdfToText from 'react-pdftotext'
 import { motion } from 'framer-motion'
 import Lottie from 'lottie-react'
 import SuccessAnimation from '../components/SuccessAnimation'
+import ResumePreviewCard from '../components/ResumePreviewCard'
 
 const Dashboard = () => {
   const { user, token } = useSelector(state => state.auth)
@@ -19,6 +20,7 @@ const Dashboard = () => {
   const [title, setTitle] = useState('')
   const [resume, setResume] = useState(null)
   const [editResumeId, setEditResumeId] = useState('')
+  const [deleteConfirmId, setDeleteConfirmId] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
   const [pageLoading, setPageLoading] = useState(true)
   const navigate = useNavigate()
@@ -94,12 +96,10 @@ const Dashboard = () => {
 
   const deleteResume = async (resumeId) => {
     try {
-      const confirm = window.confirm("Are you sure you want to delete this resume?")
-      if (confirm) {
-        const { data } = await api.delete(`/api/resumes/delete/${resumeId}`, { headers: { Authorization: token } })
-        setAllResumes(allResumes.filter(resume => resume._id !== resumeId))
-        setShowSuccess(true)
-      }
+      const { data } = await api.delete(`/api/resumes/delete/${resumeId}`, { headers: { Authorization: token } })
+      setAllResumes(allResumes.filter(resume => resume._id !== resumeId))
+      setShowSuccess(true)
+      setDeleteConfirmId(null)
     } catch (error) {
       toast.error(error?.response?.data?.message || error.message)
     }
@@ -283,7 +283,7 @@ const Dashboard = () => {
                             <PencilIcon className="size-3.5" />
                           </button>
                           <button
-                            onClick={() => deleteResume(resume._id)}
+                            onClick={(e) => { e.stopPropagation(); setDeleteConfirmId(resume._id) }}
                             className="p-1.5 rounded-md hover:bg-red-50 text-neutral-500 hover:text-red-500 transition-colors"
                             title="Delete"
                           >
@@ -292,24 +292,8 @@ const Dashboard = () => {
                         </div>
                       </div>
 
-                      {/* Preview placeholder animation */}
-                      <div className={`mt-5 h-28 rounded-xl bg-gradient-to-br ${accent} opacity-[0.05] group-hover:opacity-[0.09] transition-opacity flex items-center justify-center overflow-hidden relative`}>
-                        <motion.div
-                          className="absolute inset-0 bg-white/20"
-                          initial={{ x: "-100%" }}
-                          animate={{ x: "200%" }}
-                          transition={{ repeat: Infinity, duration: 2.5, ease: "easeInOut", delay: index * 0.2 }}
-                        />
-                        <FilePenLineIcon className="size-8 text-neutral-600 opacity-40 group-hover:scale-110 transition-transform duration-500 delay-75" />
-                      </div>
-
-                      {/* Open button */}
-                      <div className="flex items-center justify-between mt-5">
-                        <span className="text-xs text-neutral-400 font-medium">Click to edit</span>
-                        <div className="flex items-center gap-1.5 text-xs font-bold text-black opacity-0 group-hover:opacity-100 transition-opacity transform translate-x-[-10px] group-hover:translate-x-0 duration-300">
-                          Open Editor <ArrowRight className="size-3.5" />
-                        </div>
-                      </div>
+                      {/* Document Preview */}
+                      <ResumePreviewCard accent={accent} resume={resume} />
                     </div>
                   </motion.div>
                 )
@@ -413,8 +397,28 @@ const Dashboard = () => {
               </button>
             </div>
             <input onChange={(e) => setTitle(e.target.value)} value={title} type="text" placeholder='Enter new title' className='w-full px-5 py-3.5 text-sm rounded-xl border border-neutral-200 bg-neutral-50 transition-all font-medium text-black' required autoFocus />
-            <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className='btn-primary w-full py-3.5 mt-5 text-[15px]'>Save Changes</motion.button>
           </motion.form>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {deleteConfirmId && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: 'var(--bg-overlay)' }} onClick={() => setDeleteConfirmId(null)}>
+          <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} onClick={e => e.stopPropagation()} className="bg-white rounded-3xl w-full max-w-sm p-8 shadow-2xl text-center">
+            <div className="size-14 rounded-full bg-red-50 flex items-center justify-center mx-auto mb-5">
+              <TrashIcon className="size-7 text-red-500" />
+            </div>
+            <h2 className="text-xl font-bold text-black mb-2">Delete Resume?</h2>
+            <p className="text-sm text-neutral-500 mb-8">Are you sure you want to delete this resume? This action cannot be undone.</p>
+            <div className="flex gap-3">
+              <button onClick={() => setDeleteConfirmId(null)} className="flex-1 py-3.5 px-4 text-[15px] font-semibold text-neutral-700 bg-neutral-100 rounded-xl hover:bg-neutral-200 transition-colors">
+                Cancel
+              </button>
+              <button onClick={() => deleteResume(deleteConfirmId)} className="flex-1 py-3.5 px-4 text-[15px] font-semibold text-white bg-red-500 rounded-xl hover:bg-red-600 shadow-md shadow-red-500/20 transition-all">
+                Delete
+              </button>
+            </div>
+          </motion.div>
         </div>
       )}
     </div>

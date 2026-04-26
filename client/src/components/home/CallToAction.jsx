@@ -21,10 +21,10 @@ const CallToAction = () => {
       />
 
       {/* Grid overlay */}
-      <div className="absolute inset-0 pointer-events-none"
+      <div className="absolute inset-0 pointer-events-none opacity-40"
         style={{
-          backgroundImage: `linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px)`,
-          backgroundSize: '44px 44px'
+          backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Cline x1='60' y1='0' x2='60' y2='60' stroke='rgba(255,255,255,0.2)' stroke-width='1' stroke-dasharray='3,4'/%3E%3Cline x1='0' y1='60' x2='60' y2='60' stroke='rgba(255,255,255,0.2)' stroke-width='1' stroke-dasharray='3,4'/%3E%3C/svg%3E")`,
+          backgroundSize: '60px 60px'
         }}
       />
 

@@ -3,7 +3,7 @@ import { brandLogos } from './BrandLogos';
 
 const TrustedBy = () => {
     return (
-        <section className="py-16 bg-white relative border-b border-slate-100 overflow-hidden">
+        <section className="py-16 bg-white/60 backdrop-blur-[1px] relative border-b border-slate-100 overflow-hidden">
             <div className="max-w-7xl mx-auto px-6 lg:px-8 mb-10 overflow-hidden relative z-10">
                 <p className="text-center text-sm font-bold text-slate-400 tracking-widest uppercase mb-2">
                     Trusted by professionals hired at

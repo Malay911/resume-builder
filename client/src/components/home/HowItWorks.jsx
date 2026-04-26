@@ -35,14 +35,7 @@ const HowItWorks = () => {
     ];
 
     return (
-        <div id="how-it-works" className="py-24 bg-neutral-50 relative overflow-hidden border-y border-neutral-100">
-            {/* Subtle grid background */}
-            <div className="absolute inset-0 pointer-events-none"
-                style={{
-                    backgroundImage: `linear-gradient(rgba(0,0,0,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.025) 1px, transparent 1px)`,
-                    backgroundSize: '44px 44px'
-                }}
-            />
+        <div id="how-it-works" className="py-24 bg-neutral-50/60 relative overflow-hidden border-y border-neutral-100">
 
             {/* Soft color glow top-right */}
             <div className="absolute top-0 right-0 w-96 h-96 rounded-full blur-[140px] pointer-events-none opacity-50"

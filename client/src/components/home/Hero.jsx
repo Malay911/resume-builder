@@ -1,13 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { ArrowRight, LayoutTemplate, Menu, X, CheckCircle2, Sparkles } from 'lucide-react';
+import { ArrowRight, LayoutTemplate, Menu, X, CheckCircle2, Sparkles, Home } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import logo from '../../assets/logo.svg';
 
 const Hero = () => {
     const { user } = useSelector(state => state.auth);
     const [menuOpen, setMenuOpen] = useState(false);
+    const [scrolled, setScrolled] = useState(false);
+    const [activeSection, setActiveSection] = useState('');
 
     const fadeInUp = {
         hidden: { opacity: 0, y: 30 },
@@ -19,108 +21,215 @@ const Hero = () => {
         visible: { opacity: 1, transition: { staggerChildren: 0.15 } }
     };
 
+    // Track scroll position for navbar style + active section
+    useEffect(() => {
+        const handleScroll = () => {
+            setScrolled(window.scrollY > 50);
+
+            // Determine active section
+            const sections = ['features', 'how-it-works', 'testimonials', 'templates'];
+            let current = '';
+            for (const id of sections) {
+                const el = document.getElementById(id);
+                if (el) {
+                    const rect = el.getBoundingClientRect();
+                    if (rect.top <= 120) current = id;
+                }
+            }
+            setActiveSection(current);
+        };
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
+
+    // Smooth scroll to section with offset
+    const scrollToSection = useCallback((e, sectionId) => {
+        e.preventDefault();
+        if (sectionId === 'top') {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            return;
+        }
+        const el = document.getElementById(sectionId);
+        if (el) {
+            const offset = 90;
+            const y = el.getBoundingClientRect().top + window.scrollY - offset;
+            window.scrollTo({ top: y, behavior: 'smooth' });
+        }
+    }, []);
+
+    const navLinks = [
+        { id: 'features', label: 'Features' },
+        { id: 'how-it-works', label: 'How it works' },
+        { id: 'testimonials', label: 'Testimonials' },
+    ];
+
     return (
-        <div className="min-h-screen relative overflow-hidden bg-white">
-            {/* Full-page grid background */}
-            <div
-                className="absolute inset-0 pointer-events-none"
-                style={{
-                    backgroundImage: `
-                        linear-gradient(rgba(0,0,0,0.05) 1px, transparent 1px),
-                        linear-gradient(90deg, rgba(0,0,0,0.05) 1px, transparent 1px)
-                    `,
-                    backgroundSize: '44px 44px'
-                }}
-            />
+        <div id="top" className="min-h-screen relative overflow-hidden">
 
-            {/* Radial center fade so text pops */}
-            <div className="absolute inset-0 pointer-events-none"
-                style={{ background: 'radial-gradient(ellipse 70% 60% at 50% 0%, rgba(255,255,255,0.95) 0%, transparent 80%)' }}
-            />
-
-            {/* Colored accent blobs — very subtle */}
+            {/* Gradient color wash that bleeds through the grid */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                {/* Top-center indigo glow */}
                 <motion.div
-                    animate={{ x: [-20, 20, -20], y: [-20, 20, -20] }}
-                    transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
-                    className="absolute -top-[10%] -left-[10%] w-[50%] h-[50%] rounded-full blur-[130px]"
-                    style={{ background: 'radial-gradient(circle, rgba(59,130,246,0.10) 0%, rgba(139,92,246,0.06) 60%, transparent 100%)' }}
+                    animate={{ scale: [1, 1.1, 1], opacity: [0.7, 1, 0.7] }}
+                    transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+                    className="absolute -top-[15%] left-1/2 -translate-x-1/2 w-[70%] h-[60%] rounded-full blur-[100px]"
+                    style={{ background: 'radial-gradient(circle, rgba(99,102,241,0.13) 0%, rgba(59,130,246,0.08) 40%, transparent 70%)' }}
                 />
+                {/* Left blue blob */}
                 <motion.div
-                    animate={{ x: [20, -20, 20], y: [20, -20, 20] }}
-                    transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
-                    className="absolute top-[20%] right-[0%] w-[40%] h-[60%] rounded-full blur-[140px]"
-                    style={{ background: 'radial-gradient(circle, rgba(236,72,153,0.07) 0%, rgba(139,92,246,0.05) 60%, transparent 100%)' }}
+                    animate={{ x: [-20, 20, -20], y: [0, 30, 0] }}
+                    transition={{ duration: 16, repeat: Infinity, ease: "easeInOut" }}
+                    className="absolute top-[20%] -left-[10%] w-[40%] h-[50%] rounded-full blur-[90px]"
+                    style={{ background: 'radial-gradient(circle, rgba(59,130,246,0.12) 0%, transparent 70%)' }}
                 />
+                {/* Right violet blob */}
                 <motion.div
-                    animate={{ scale: [1, 1.08, 1] }}
+                    animate={{ x: [15, -25, 15], y: [-10, 20, -10] }}
+                    transition={{ duration: 14, repeat: Infinity, ease: "easeInOut" }}
+                    className="absolute top-[15%] -right-[8%] w-[45%] h-[55%] rounded-full blur-[100px]"
+                    style={{ background: 'radial-gradient(circle, rgba(139,92,246,0.12) 0%, rgba(236,72,153,0.05) 50%, transparent 70%)' }}
+                />
+                {/* Bottom cyan glow */}
+                <motion.div
+                    animate={{ scale: [1, 1.12, 1] }}
                     transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-                    className="absolute bottom-[-10%] left-[20%] w-[60%] h-[40%] rounded-full blur-[120px]"
-                    style={{ background: 'radial-gradient(circle, rgba(6,182,212,0.07) 0%, transparent 70%)' }}
+                    className="absolute bottom-[-10%] left-[25%] w-[50%] h-[35%] rounded-full blur-[90px]"
+                    style={{ background: 'radial-gradient(circle, rgba(6,182,212,0.10) 0%, transparent 70%)' }}
                 />
             </div>
 
-            {/* Navbar */}
-            <nav className="relative z-50 flex items-center justify-between w-full py-4 px-6 md:px-12 lg:px-20 xl:px-32 border-b border-black/[0.06] bg-white/60 backdrop-blur-xl">
-                <Link to="/" className="flex items-center">
-                    <img src={logo} alt="ResumeAI" className="h-7 w-auto" />
-                </Link>
+            {/* Center fade — keeps text crisp and readable over the grid */}
+            <div className="absolute inset-0 pointer-events-none"
+                style={{ background: 'radial-gradient(ellipse 60% 50% at 50% 45%, rgba(255,255,255,0.85) 0%, transparent 70%)' }}
+            />
 
-                <div className="hidden md:flex items-center gap-8 text-sm font-semibold text-neutral-500">
-                    <a href="#features" className="hover:text-black transition-colors">Features</a>
-                    <a href="#how-it-works" className="hover:text-black transition-colors">How it works</a>
-                    <a href="#testimonials" className="hover:text-black transition-colors">Testimonials</a>
-                </div>
+            {/* ═══ Floating Navbar ═══ */}
+            <motion.nav
+                initial={{ y: 0 }}
+                animate={scrolled ? { y: 0 } : { y: 0 }}
+                className="fixed top-0 left-0 right-0 z-50 flex justify-center px-4 pt-4 pointer-events-none"
+            >
+                <motion.div
+                    layout
+                    className="pointer-events-auto flex items-center justify-between w-full max-w-7xl px-5 md:px-8 py-4 rounded-2xl transition-all duration-500"
+                    style={{
+                        background: scrolled ? 'rgba(255,255,255,0.82)' : 'rgba(255,255,255,0.60)',
+                        backdropFilter: 'blur(24px)',
+                        WebkitBackdropFilter: 'blur(24px)',
+                        border: scrolled ? '1px solid rgba(0,0,0,0.08)' : '1px solid rgba(0,0,0,0.04)',
+                        boxShadow: scrolled
+                            ? '0 8px 32px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.04)'
+                            : '0 1px 4px rgba(0,0,0,0.02)',
+                    }}
+                >
+                    {/* Logo */}
+                    <a href="#top" onClick={(e) => scrollToSection(e, 'top')} className="flex items-center shrink-0">
+                        <img src={logo} alt="ResumeForge" className="h-8 w-auto" />
+                    </a>
 
-                <div className="hidden md:flex items-center gap-3">
-                    {user ? (
-                        <Link to='/app' className="btn-primary px-6 py-2.5 text-sm flex items-center gap-2">
-                            Dashboard <ArrowRight className="size-3.5" />
-                        </Link>
-                    ) : (
-                        <>
-                            <Link to='/app?state=login' className="text-neutral-600 hover:text-black font-semibold px-4 py-2 text-sm transition-colors">Log in</Link>
-                            <Link to="/app?state=register" className="btn-primary px-6 py-2.5 text-sm hover:-translate-y-0.5 transition-all">Get Started</Link>
-                        </>
-                    )}
-                </div>
+                    {/* Desktop Nav Links */}
+                    <div className="hidden md:flex items-center gap-1.5 bg-neutral-100/70 rounded-xl p-1.5">
+                        <a
+                            href="#top"
+                            onClick={(e) => scrollToSection(e, 'top')}
+                            className={`px-4 py-2 text-[15px] font-semibold rounded-lg transition-all duration-200 flex items-center gap-1.5 ${
+                                !activeSection
+                                    ? 'bg-white text-black shadow-sm'
+                                    : 'text-neutral-500 hover:text-black hover:bg-white/50'
+                            }`}
+                        >
+                            <Home className="size-4" />
+                            Home
+                        </a>
+                        {navLinks.map(link => (
+                            <a
+                                key={link.id}
+                                href={`#${link.id}`}
+                                onClick={(e) => scrollToSection(e, link.id)}
+                                className={`px-4 py-2 text-[15px] font-semibold rounded-lg transition-all duration-200 ${
+                                    activeSection === link.id
+                                        ? 'bg-white text-black shadow-sm'
+                                        : 'text-neutral-500 hover:text-black hover:bg-white/50'
+                                }`}
+                            >
+                                {link.label}
+                            </a>
+                        ))}
+                    </div>
 
-                <button onClick={() => setMenuOpen(true)} className="md:hidden p-2 rounded-lg text-neutral-600 bg-white shadow-sm border border-neutral-200 hover:bg-neutral-50 transition">
-                    <Menu className="size-5" />
-                </button>
-            </nav>
+                    {/* Desktop Auth Buttons */}
+                    <div className="hidden md:flex items-center gap-3 shrink-0">
+                        {user ? (
+                            <Link to='/app' className="btn-primary px-6 py-2.5 text-[15px] flex items-center gap-2">
+                                Dashboard <ArrowRight className="size-4" />
+                            </Link>
+                        ) : (
+                            <>
+                                <Link to='/app?state=login' className="text-neutral-600 hover:text-black font-semibold px-5 py-2.5 text-[15px] transition-colors">Log in</Link>
+                                <Link to="/app?state=register" className="btn-primary px-6 py-2.5 text-[15px] hover:-translate-y-0.5 transition-all">Get Started</Link>
+                            </>
+                        )}
+                    </div>
 
-            {/* Mobile Menu */}
+                    {/* Mobile Menu Button */}
+                    <button onClick={() => setMenuOpen(true)} className="md:hidden p-2 rounded-xl text-neutral-600 bg-white/80 shadow-sm border border-neutral-200/60 hover:bg-neutral-50 transition">
+                        <Menu className="size-5" />
+                    </button>
+                </motion.div>
+            </motion.nav>
+
+            {/* ═══ Mobile Menu ═══ */}
             <AnimatePresence>
                 {menuOpen && (
                     <motion.div
-                        initial={{ opacity: 0, y: -20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -20 }}
-                        className="fixed inset-0 z-[100] bg-white flex flex-col items-center justify-center gap-6 md:hidden"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.2 }}
+                        className="fixed inset-0 z-[100] bg-black/20 backdrop-blur-sm md:hidden"
+                        onClick={() => setMenuOpen(false)}
                     >
-                        <button onClick={() => setMenuOpen(false)} className="absolute top-6 right-6 p-2 text-neutral-400 hover:text-black bg-neutral-50 rounded-full transition">
-                            <X className="size-6" />
-                        </button>
-                        <a href="#features" className="text-xl font-semibold text-black" onClick={() => setMenuOpen(false)}>Features</a>
-                        <a href="#how-it-works" className="text-xl font-semibold text-black" onClick={() => setMenuOpen(false)}>How it works</a>
-                        <a href="#testimonials" className="text-xl font-semibold text-black" onClick={() => setMenuOpen(false)}>Testimonials</a>
-                        <div className="flex flex-col gap-3 w-4/5 mt-4">
-                            {user ? (
-                                <Link to="/app" className="btn-primary py-3.5 text-center text-sm" onClick={() => setMenuOpen(false)}>Dashboard</Link>
-                            ) : (
-                                <>
-                                    <Link to="/app?state=login" className="btn-secondary py-3.5 text-center text-sm" onClick={() => setMenuOpen(false)}>Log in</Link>
-                                    <Link to="/app?state=register" className="btn-primary py-3.5 text-center text-sm" onClick={() => setMenuOpen(false)}>Get Started</Link>
-                                </>
-                            )}
-                        </div>
+                        <motion.div
+                            initial={{ opacity: 0, y: -20, scale: 0.95 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            exit={{ opacity: 0, y: -20, scale: 0.95 }}
+                            transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
+                            onClick={e => e.stopPropagation()}
+                            className="mx-4 mt-4 bg-white rounded-2xl shadow-2xl border border-neutral-100 overflow-hidden"
+                        >
+                            <div className="flex items-center justify-between px-5 py-4 border-b border-neutral-100">
+                                <img src={logo} alt="ResumeForge" className="h-6 w-auto" />
+                                <button onClick={() => setMenuOpen(false)} className="p-1.5 text-neutral-400 hover:text-black bg-neutral-50 rounded-lg transition">
+                                    <X className="size-5" />
+                                </button>
+                            </div>
+                            <div className="px-3 py-3 space-y-1">
+                                <a href="#top" onClick={(e) => { scrollToSection(e, 'top'); setMenuOpen(false); }} className="flex items-center gap-3 px-4 py-3 rounded-xl text-base font-semibold text-black hover:bg-neutral-50 transition-colors">
+                                    <Home className="size-4 text-neutral-400" /> Home
+                                </a>
+                                {navLinks.map(link => (
+                                    <a key={link.id} href={`#${link.id}`} onClick={(e) => { scrollToSection(e, link.id); setMenuOpen(false); }} className="flex items-center gap-3 px-4 py-3 rounded-xl text-base font-semibold text-black hover:bg-neutral-50 transition-colors">
+                                        {link.label}
+                                    </a>
+                                ))}
+                            </div>
+                            <div className="px-4 pb-4 pt-2 space-y-2 border-t border-neutral-100 mt-1">
+                                {user ? (
+                                    <Link to="/app" className="btn-primary py-3 text-center text-sm w-full block" onClick={() => setMenuOpen(false)}>Dashboard</Link>
+                                ) : (
+                                    <>
+                                        <Link to="/app?state=login" className="btn-secondary py-3 text-center text-sm w-full block" onClick={() => setMenuOpen(false)}>Log in</Link>
+                                        <Link to="/app?state=register" className="btn-primary py-3 text-center text-sm w-full block" onClick={() => setMenuOpen(false)}>Get Started</Link>
+                                    </>
+                                )}
+                            </div>
+                        </motion.div>
                     </motion.div>
                 )}
             </AnimatePresence>
 
             {/* Hero Content */}
-            <div className="relative z-10 max-w-7xl mx-auto px-6 pt-20 lg:pt-32 pb-24 flex flex-col lg:flex-row items-center gap-16">
+            <div className="relative z-10 max-w-7xl mx-auto px-6 pt-28 lg:pt-36 pb-24 flex flex-col lg:flex-row items-center gap-16">
 
                 {/* Left column */}
                 <motion.div
@@ -132,7 +241,7 @@ const Hero = () => {
                     {/* Gradient accent badge */}
                     <motion.div variants={fadeInUp} className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-neutral-200 shadow-sm mb-6">
                         <span className="flex size-2 rounded-full animate-pulse" style={{ background: 'linear-gradient(135deg,#3b82f6,#8b5cf6)' }}></span>
-                        <span className="text-xs font-semibold text-neutral-600 uppercase tracking-wider">✨ Welcome to ResumeAI</span>
+                        <span className="text-xs font-semibold text-neutral-600 uppercase tracking-wider">✨ Welcome to ResumeForge</span>
                     </motion.div>
 
                     <motion.h1 variants={fadeInUp} className="text-5xl md:text-6xl lg:text-[4.5rem] font-extrabold text-black leading-[1.05] tracking-tight">

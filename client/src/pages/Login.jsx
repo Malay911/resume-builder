@@ -177,7 +177,7 @@ const Login = () => {
 
                 <div className="relative text-center max-w-md z-10">
                     <div className="mb-8">
-                        <img src={logo} alt="ResumeAI" className="h-9 w-auto mx-auto" style={{ filter: 'brightness(0) invert(1)' }} />
+                        <img src={logo} alt="ResumeForge" className="h-9 w-auto mx-auto" style={{ filter: 'brightness(0) invert(1)' }} />
                     </div>
                     <h2 className="text-3xl font-bold text-white leading-tight">
                         Build your perfect resume<br />in minutes
@@ -211,7 +211,7 @@ const Login = () => {
 
                     {/* Mobile logo */}
                     <div className="lg:hidden flex items-center mb-8">
-                        <img src={logo} alt="ResumeAI" className="h-7 w-auto" />
+                        <img src={logo} alt="ResumeForge" className="h-7 w-auto" />
                     </div>
 
                     {/* Heading */}

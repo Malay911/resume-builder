@@ -86,6 +86,11 @@
   box-sizing: border-box;
 }
 
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 100px;
+}
+
 body {
   background: var(--bg-body);
   color: var(--text-primary);

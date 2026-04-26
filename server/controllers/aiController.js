@@ -95,8 +95,8 @@ export const uploadResume=async(req,res)=>{
             {
                 company:{type: String},
                 position:{type: String},
-                start_date:{type: String},
-                end_date:{type: String},
+                start_date:{type: String, format: "YYYY-MM", example: "2023-12"},
+                end_date:{type: String, format: "YYYY-MM", example: "2024-11"},
                 description:{type: String},
                 is_current:{type: Boolean}
             }
@@ -113,10 +113,12 @@ export const uploadResume=async(req,res)=>{
                 institution:{type: String},
                 degree:{type: String},
                 field:{type: String},
-                graduation_date:{type: String},
+                graduation_date:{type: String, format: "YYYY-MM", example: "2026-05"},
                 gpa:{type: String}
             }
         ],
+
+        IMPORTANT: All date fields (start_date, end_date, graduation_date) MUST be in "YYYY-MM" format (e.g. "2023-12", "2024-08"). Convert any date like "Dec 2023" to "2023-12", "Aug 2024" to "2024-08", "2020" to "2020-01". If is_current is true, end_date should be empty string "".
         }
 
         `

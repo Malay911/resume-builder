@@ -36,7 +36,7 @@ const Navbar = () => {
         <header className="sticky top-0 z-50 glass" style={{ borderBottom: '1px solid var(--border-light)' }}>
             <nav className="flex items-center justify-between max-w-7xl mx-auto px-5 py-3">
                 <Link to="/app" className="flex items-center gap-2.5 group">
-                    <img src={logo} alt="ResumeAI logo" className="h-7 w-auto" />
+                    <img src={logo} alt="ResumeForge logo" className="h-7 w-auto" />
                 </Link>
 
                 <div className="relative" ref={dropdownRef}>

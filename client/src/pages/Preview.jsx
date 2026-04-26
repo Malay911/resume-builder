@@ -32,7 +32,7 @@ const Preview = () => {
         <div className="max-w-4xl mx-auto flex items-center justify-between px-5 py-3">
           <div className="flex items-center gap-3">
             <Link to="/" className="flex items-center gap-2">
-              <img src={logo} alt="ResumeAI logo" className="h-7 w-auto" />
+              <img src={logo} alt="ResumeForge logo" className="h-7 w-auto" />
             </Link>
           </div>
           <button onClick={() => { window.print(); setShowSuccess(true) }} className="btn-primary px-4 py-2 text-xs flex items-center gap-1.5">

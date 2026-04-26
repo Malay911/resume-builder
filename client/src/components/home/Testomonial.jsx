@@ -8,7 +8,7 @@ const Testimonial = () => {
             name: "Sarah Jenkins",
             role: "Software Engineer at Google",
             avatar: "https://i.pravatar.cc/150?img=47",
-            content: "I was struggling to get callbacks with my old resume. After using ResumeAI's suggestions and switching to the Modern template, I landed three interviews in one week.",
+            content: "I was struggling to get callbacks with my old resume. After using ResumeForge's suggestions and switching to the Modern template, I landed three interviews in one week.",
             rating: 5,
             accent: 'linear-gradient(135deg, #3b82f6, #8b5cf6)',
             badge: 'rgba(59,130,246,0.12)',
@@ -58,7 +58,7 @@ const Testimonial = () => {
     const prevSlide = () => setCurrentIndex((prev) => (prev - 1 + testimonials.length) % testimonials.length);
 
     return (
-        <div id="testimonials" className="py-24 bg-white relative overflow-hidden">
+        <div id="testimonials" className="py-24 bg-white/50 relative overflow-hidden">
             {/* Subtle colored blob */}
             <div className="absolute top-[20%] right-[-10%] w-[40%] h-[60%] rounded-full pointer-events-none blur-[120px]"
                 style={{ background: 'radial-gradient(circle, rgba(139,92,246,0.07) 0%, transparent 70%)' }}

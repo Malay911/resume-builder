@@ -5,14 +5,14 @@ import logo from '../../assets/logo.svg';
 
 const Footer = () => {
     return (
-        <footer className="bg-white border-t border-neutral-100 pt-20 pb-10">
+        <footer className="bg-white/70 backdrop-blur-[1px] border-t border-neutral-100 pt-20 pb-10">
             <div className="max-w-7xl mx-auto px-6 lg:px-8">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 mb-16">
 
                     {/* Brand Column */}
                     <div className="lg:col-span-2">
                         <Link to="/" className="flex items-center mb-6">
-                            <img src={logo} alt="ResumeAI" className="h-7 w-auto" />
+                            <img src={logo} alt="ResumeForge" className="h-7 w-auto" />
                         </Link>
                         <p className="text-neutral-500 text-sm leading-relaxed mb-6 max-w-sm">
                             The modern way to build professional, ATS-optimized resumes that actually get read. Stop formatting and start applying.
@@ -65,7 +65,7 @@ const Footer = () => {
                 {/* Bottom bar */}
                 <div className="pt-8 border-t border-neutral-100 flex flex-col md:flex-row items-center justify-between gap-4">
                     <p className="text-sm text-neutral-400">
-                        © {new Date().getFullYear()} ResumeAI. All rights reserved.
+                        © {new Date().getFullYear()} ResumeForge. All rights reserved.
                     </p>
                     <p className="text-sm text-neutral-400 flex items-center gap-1.5 focus:outline-none">
                         Built with <Heart className="size-4 text-neutral-400 fill-neutral-300" /> for job seekers
