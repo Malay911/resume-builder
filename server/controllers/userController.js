@@ -2,6 +2,9 @@ import User from "../models/User.js";
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 import Resume from "../models/Resume.js";
+import { OAuth2Client } from "google-auth-library";
+
+const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 const generateToken=(userId)=>{
     const token=jwt.sign({userId},process.env.JWT_SECRET,{expiresIn:"7d"});
@@ -63,6 +66,52 @@ export const loginUser=async(req,res)=>{
 
     } catch (error) {
         return res.status(400).json({error:error.message});
+    }
+}
+
+//controller for Google One Tap login
+//POST: api/users/google-login
+export const googleLoginUser=async(req,res)=>{
+    try {
+        const {credential}=req.body;
+
+        if(!credential){
+            return res.status(400).json({message:"No credential provided"});
+        }
+
+        // Verify the Google JWT token
+        const ticket=await googleClient.verifyIdToken({
+            idToken: credential,
+            audience: process.env.GOOGLE_CLIENT_ID,
+        });
+
+        const payload=ticket.getPayload();
+        const {sub: googleId, email, name, picture}=payload;
+
+        // Upsert user: find by email, update or create
+        let user=await User.findOne({email});
+
+        if(!user){
+            // New Google user — create without password
+            user=await User.create({name, email, googleId, picture});
+        } else {
+            // Existing user — update Google-specific fields if missing
+            if(!user.googleId) user.googleId=googleId;
+            if(!user.picture && picture) user.picture=picture;
+            await user.save();
+        }
+
+        const token=generateToken(user._id);
+        user.password=undefined;
+        return res.status(200).json({
+            message:"Logged in with Google successfully",
+            token,
+            user
+        });
+
+    } catch (error) {
+        console.error("Google login error:", error.message);
+        return res.status(401).json({message:"Google authentication failed"});
     }
 }
 
