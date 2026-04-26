@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { logout } from '../app/features/authSlice'
 import { LogOut, ChevronDown, FileText } from 'lucide-react'
@@ -35,9 +35,9 @@ const Navbar = () => {
     return (
         <header className="sticky top-0 z-50 glass" style={{ borderBottom: '1px solid var(--border-light)' }}>
             <nav className="flex items-center justify-between max-w-7xl mx-auto px-5 py-3">
-                <a href="/app" className="flex items-center gap-2.5 group">
+                <Link to="/app" className="flex items-center gap-2.5 group">
                     <img src={logo} alt="ResumeAI logo" className="h-7 w-auto" />
-                </a>
+                </Link>
 
                 <div className="relative" ref={dropdownRef}>
                     <button

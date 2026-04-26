@@ -49,6 +49,22 @@ const Login = () => {
         password: ''
     })
 
+    // ── Handle GitHub OAuth error redirects ──────────────────────────────────
+    React.useEffect(() => {
+        const error = query.get('error')
+        if (error) {
+            const errorMessages = {
+                github_no_code: 'GitHub authorization was cancelled.',
+                github_token_failed: 'Failed to exchange GitHub token. Please try again.',
+                github_no_email: 'No email found on your GitHub account. Please ensure you have a verified email.',
+                github_auth_failed: 'GitHub authentication failed. Please try again.',
+            }
+            toast.error(errorMessages[error] || 'Sign-in failed. Please try again.')
+            // Clean up the URL
+            window.history.replaceState({}, '', window.location.pathname)
+        }
+    }, [])
+
     // ── Handle credential response from Google ───────────────────────────────
     // useCallback keeps a stable reference so renderButton's callback always works
     const handleGoogleCredential = useCallback(async (response) => {
@@ -271,11 +287,17 @@ const Login = () => {
                         )}
                     </button>
 
-                    {/* ── GitHub Button (UI only) ── */}
+                    {/* ── GitHub Button ── */}
                     <button
                         id="github-signin-btn"
                         type="button"
-                        disabled
+                        onClick={() => {
+                            const clientId = 'Ov23li6vXlOu8jW9I0zi'
+                            const redirectUri = encodeURIComponent(
+                                `${import.meta.env.VITE_BASE_URL || 'http://localhost:5000'}/api/github/callback`
+                            )
+                            window.location.href = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=user:email`
+                        }}
                         style={{
                             display: 'flex',
                             alignItems: 'center',
@@ -286,16 +308,27 @@ const Login = () => {
                             padding: '11px 16px',
                             border: '1.5px solid #d4d4d4',
                             borderRadius: '10px',
-                            background: '#fafafa',
-                            cursor: 'not-allowed',
+                            background: '#ffffff',
+                            cursor: 'pointer',
                             fontSize: '14px',
                             fontWeight: '500',
-                            color: '#888',
+                            color: '#111',
+                            transition: 'box-shadow 0.18s ease, transform 0.18s ease',
+                            boxShadow: '0 1px 2px rgba(0,0,0,0.06)',
+                            position: 'relative',
+                            overflow: 'hidden',
+                        }}
+                        onMouseEnter={e => {
+                            e.currentTarget.style.boxShadow = '0 4px 16px rgba(0,0,0,0.10)'
+                            e.currentTarget.style.transform = 'translateY(-1px)'
+                        }}
+                        onMouseLeave={e => {
+                            e.currentTarget.style.boxShadow = '0 1px 2px rgba(0,0,0,0.06)'
+                            e.currentTarget.style.transform = 'translateY(0)'
                         }}
                     >
                         <GithubIcon />
                         <span>Continue with GitHub</span>
-                        <span style={{ marginLeft: 'auto', fontSize: '10px', background: '#f0f0f0', padding: '2px 7px', borderRadius: '99px', color: '#999', fontWeight: 600, letterSpacing: '0.04em' }}>Soon</span>
                     </button>
 
                     <Divider />

@@ -11,9 +11,9 @@ const Footer = () => {
 
                     {/* Brand Column */}
                     <div className="lg:col-span-2">
-                        <a href="/" className="flex items-center mb-6">
+                        <Link to="/" className="flex items-center mb-6">
                             <img src={logo} alt="ResumeAI" className="h-7 w-auto" />
-                        </a>
+                        </Link>
                         <p className="text-neutral-500 text-sm leading-relaxed mb-6 max-w-sm">
                             The modern way to build professional, ATS-optimized resumes that actually get read. Stop formatting and start applying.
                         </p>

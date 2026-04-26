@@ -62,9 +62,9 @@ const Hero = () => {
 
             {/* Navbar */}
             <nav className="relative z-50 flex items-center justify-between w-full py-4 px-6 md:px-12 lg:px-20 xl:px-32 border-b border-black/[0.06] bg-white/60 backdrop-blur-xl">
-                <a href="/" className="flex items-center">
+                <Link to="/" className="flex items-center">
                     <img src={logo} alt="ResumeAI" className="h-7 w-auto" />
-                </a>
+                </Link>
 
                 <div className="hidden md:flex items-center gap-8 text-sm font-semibold text-neutral-500">
                     <a href="#features" className="hover:text-black transition-colors">Features</a>
