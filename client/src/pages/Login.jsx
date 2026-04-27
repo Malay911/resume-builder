@@ -82,36 +82,10 @@ const Login = () => {
         }
     }, [dispatch])
 
-    // ── Load Google Identity Services, initialise & render hidden button ──────
-    // We render Google's real button into a hidden container.
-    // When user clicks our styled button we click the real one — this bypasses
-    // the browser suppression that affects prompt() on user-gesture events.
+    // ── Load Google Identity Services ─────────────────────────────────────────
     useEffect(() => {
         if (oneTapInitialised.current) return
         oneTapInitialised.current = true
-
-        const initGoogle = () => {
-            if (!window.google || !CLIENT_ID) return
-
-            window.google.accounts.id.initialize({
-                client_id: CLIENT_ID,
-                callback: handleGoogleCredential,
-                auto_select: false,
-                cancel_on_tap_outside: true,
-                ux_mode: 'popup',
-            })
-
-            // Render Google's real button into the hidden container
-            const hiddenContainer = document.getElementById('google-hidden-btn-container')
-            if (hiddenContainer) {
-                window.google.accounts.id.renderButton(hiddenContainer, {
-                    theme: 'outline',
-                    size: 'large',
-                    type: 'standard',
-                    shape: 'rectangular',
-                })
-            }
-        }
 
         const existingScript = document.getElementById('google-gsi')
         if (!existingScript) {
@@ -120,21 +94,35 @@ const Login = () => {
             script.id = 'google-gsi'
             script.async = true
             script.defer = true
-            script.onload = initGoogle
             document.head.appendChild(script)
-        } else {
-            initGoogle()
         }
-    }, [handleGoogleCredential])
+    }, [])
 
-    // ── Click the hidden real Google button ─────────────────────────────────
+    // ── Trigger Google OAuth Popup ──────────────────────────────────────────
     const handleGoogleButtonClick = () => {
-        const realBtn = document.querySelector('#google-hidden-btn-container div[role="button"]')
-            || document.querySelector('#google-hidden-btn-container button')
-        if (realBtn) {
-            realBtn.click()
-        } else {
+        if (!window.google || !window.google.accounts || !window.google.accounts.oauth2) {
             toast.error('Google sign-in is still loading, please try again.')
+            return
+        }
+
+        try {
+            const client = window.google.accounts.oauth2.initTokenClient({
+                client_id: CLIENT_ID,
+                scope: 'email profile',
+                callback: (response) => {
+                    if (response.error) {
+                        toast.error('Google sign-in failed.')
+                        return
+                    }
+                    if (response.access_token) {
+                        handleGoogleCredential({ credential: response.access_token })
+                    }
+                },
+            })
+            client.requestAccessToken()
+        } catch (error) {
+            console.error('Google login error:', error)
+            toast.error('Google sign-in failed to initialize.')
         }
     }
 
@@ -224,20 +212,6 @@ const Login = () => {
                             : "Start building your professional resume"}
                     </p>
 
-                    {/* ── Hidden container for Google's real rendered button (must be in DOM, not display:none) ── */}
-                    <div
-                        id="google-hidden-btn-container"
-                        style={{
-                            position: 'absolute',
-                            width: '1px',
-                            height: '1px',
-                            overflow: 'hidden',
-                            opacity: 0,
-                            pointerEvents: 'none',
-                            top: 0,
-                            left: 0,
-                        }}
-                    />
 
                     {/* ── Google Button ── */}
                     <button

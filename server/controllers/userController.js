@@ -3,6 +3,7 @@ import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 import Resume from "../models/Resume.js";
 import { OAuth2Client } from "google-auth-library";
+import axios from "axios";
 
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
@@ -79,13 +80,24 @@ export const googleLoginUser=async(req,res)=>{
             return res.status(400).json({message:"No credential provided"});
         }
 
-        // Verify the Google JWT token
-        const ticket=await googleClient.verifyIdToken({
-            idToken: credential,
-            audience: process.env.GOOGLE_CLIENT_ID,
-        });
+        let payload;
 
-        const payload=ticket.getPayload();
+        // Check if the credential is a JWT (contains two dots) or an access token
+        if (credential.split('.').length === 3) {
+            // Verify the Google JWT token
+            const ticket=await googleClient.verifyIdToken({
+                idToken: credential,
+                audience: process.env.GOOGLE_CLIENT_ID,
+            });
+            payload=ticket.getPayload();
+        } else {
+            // Fetch user info using access token
+            const { data } = await axios.get('https://www.googleapis.com/oauth2/v3/userinfo', {
+                headers: { Authorization: `Bearer ${credential}` }
+            });
+            payload = data;
+        }
+
         const {sub: googleId, email, name, picture}=payload;
 
         // Upsert user: find by email, update or create
