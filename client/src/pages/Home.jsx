@@ -1,4 +1,6 @@
 import React from 'react';
+import { Navigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import Hero from '../components/home/Hero';
 import TrustedBy from '../components/home/TrustedBy';
 import Features from '../components/home/Features';
@@ -6,8 +8,14 @@ import HowItWorks from '../components/home/HowItWorks';
 import Testimonial from '../components/home/Testomonial';
 import CallToAction from '../components/home/CallToAction';
 import Footer from '../components/home/Footer';
+import Loader from '../components/Loader';
 
 const Home = () => {
+  const { user, loading } = useSelector((state) => state.auth);
+
+  if (loading) return <Loader />;
+  if (user) return <Navigate to="/app" replace />;
+
   return (
     <div className="relative min-h-screen bg-white antialiased selection:bg-indigo-500/30">
       {/* Persistent dotted grid background across the entire page */}

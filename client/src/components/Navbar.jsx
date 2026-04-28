@@ -44,10 +44,19 @@ const Navbar = () => {
                         onClick={() => setDropdownOpen(!dropdownOpen)}
                         className="flex items-center gap-2.5 py-1.5 pl-1.5 pr-3 rounded-full transition-all duration-200 hover:bg-neutral-50 border border-transparent hover:border-neutral-200"
                     >
-                        <div className="flex items-center justify-center size-8 rounded-full text-xs font-bold text-white"
-                            style={{ background: 'linear-gradient(135deg,#3b82f6,#8b5cf6)' }}>
-                            {getInitials(user?.name)}
-                        </div>
+                        {user?.picture ? (
+                            <img
+                                src={user.picture}
+                                alt={user.name}
+                                className="size-8 rounded-full object-cover"
+                                referrerPolicy="no-referrer"
+                            />
+                        ) : (
+                            <div className="flex items-center justify-center size-8 rounded-full text-xs font-bold text-white"
+                                style={{ background: 'linear-gradient(135deg,#3b82f6,#8b5cf6)' }}>
+                                {getInitials(user?.name)}
+                            </div>
+                        )}
                         <span className="text-sm font-medium text-neutral-700 max-sm:hidden">{user?.name}</span>
                         <ChevronDown className={`size-3.5 text-neutral-400 transition-transform duration-200 max-sm:hidden ${dropdownOpen ? 'rotate-180' : ''}`} />
                     </button>
