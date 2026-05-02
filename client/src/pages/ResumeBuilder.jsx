@@ -84,7 +84,6 @@ const ResumeBuilder = () => {
 
   const downloadResume = () => {
     window.print()
-    setShowSuccess(true)
   }
 
   const saveResume = async () => {

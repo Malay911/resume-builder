@@ -1,4 +1,4 @@
-import { Mail, Phone, MapPin, Linkedin, Globe } from "lucide-react";
+import { Mail, Phone, MapPin, Linkedin, Github, Globe } from "lucide-react";
 
 const ClassicTemplate = ({ data, accentColor }) => {
     const formatDate = (dateStr) => {
@@ -27,10 +27,10 @@ const ClassicTemplate = ({ data, accentColor }) => {
     };
 
     return (
-        <div className="max-w-4xl mx-auto px-8 py-5 bg-white text-gray-800 text-sm leading-normal">
+        <div className="max-w-4xl mx-auto px-8 py-4 bg-white text-gray-800 text-sm leading-normal">
             {/* Header */}
-            <header className="text-center mb-4 pb-3 border-b-2" style={{ borderColor: accentColor }}>
-                <h1 className="text-[22px] font-bold mb-2 uppercase tracking-wide" style={{ color: accentColor }}>
+            <header className="text-center mb-3 pb-2 border-b-2" style={{ borderColor: accentColor }}>
+                <h1 className="text-[22px] font-bold mb-1.5 uppercase tracking-wide" style={{ color: accentColor }}>
                     {data.personal_info?.full_name || "Your Name"}
                 </h1>
 
@@ -60,6 +60,12 @@ const ClassicTemplate = ({ data, accentColor }) => {
                             <span className="break-all">{data.personal_info.linkedin}</span>
                         </div>
                     )}
+                    {data.personal_info?.github && (
+                        <div className="flex items-center gap-1">
+                            <Github className="size-3.5" />
+                            <span>{data.personal_info.github}</span>
+                        </div>
+                    )}
                     {data.personal_info?.website && (
                         <div className="flex items-center gap-1">
                             <Globe className="size-3.5" />
@@ -71,8 +77,8 @@ const ClassicTemplate = ({ data, accentColor }) => {
 
             {/* Professional Summary */}
             {data.professional_summary && (
-                <section className="mb-4">
-                    <h2 className="text-[15px] font-semibold mb-1.5 uppercase tracking-wide" style={{ color: accentColor }}>
+                <section className="mb-3">
+                    <h2 className="text-[15px] font-semibold mb-1 uppercase tracking-wide" style={{ color: accentColor }}>
                         Professional Summary
                     </h2>
                     <p className="text-gray-700 leading-normal">{data.professional_summary}</p>
@@ -81,12 +87,12 @@ const ClassicTemplate = ({ data, accentColor }) => {
 
             {/* Experience */}
             {data.experience && data.experience.length > 0 && (
-                <section className="mb-4">
-                    <h2 className="text-[15px] font-semibold mb-2.5 uppercase tracking-wide" style={{ color: accentColor }}>
+                <section className="mb-3">
+                    <h2 className="text-[15px] font-semibold mb-2 uppercase tracking-wide" style={{ color: accentColor }}>
                         Professional Experience
                     </h2>
 
-                    <div className="space-y-3">
+                    <div className="space-y-2.5">
                         {data.experience.map((exp, index) => (
                             <div key={index} className="border-l-2 pl-3.5" style={{ borderColor: accentColor }}>
                                 <div className="flex justify-between items-start mb-0.5">
@@ -111,12 +117,12 @@ const ClassicTemplate = ({ data, accentColor }) => {
 
             {/* Projects */}
             {data.project && data.project.length > 0 && (
-                <section className="mb-4">
-                    <h2 className="text-[15px] font-semibold mb-2.5 uppercase tracking-wide" style={{ color: accentColor }}>
+                <section className="mb-3">
+                    <h2 className="text-[15px] font-semibold mb-2 uppercase tracking-wide" style={{ color: accentColor }}>
                         Projects
                     </h2>
 
-                    <div className="space-y-2.5">
+                    <div className="space-y-2">
                         {data.project.map((proj, index) => (
                             <div key={index} className="border-l-2 border-gray-300 pl-3.5">
                                 <h3 className="font-semibold text-gray-800">{proj.name}</h3>
@@ -129,12 +135,12 @@ const ClassicTemplate = ({ data, accentColor }) => {
 
             {/* Education */}
             {data.education && data.education.length > 0 && (
-                <section className="mb-4">
-                    <h2 className="text-[15px] font-semibold mb-2.5 uppercase tracking-wide" style={{ color: accentColor }}>
+                <section className="mb-3">
+                    <h2 className="text-[15px] font-semibold mb-2 uppercase tracking-wide" style={{ color: accentColor }}>
                         Education
                     </h2>
 
-                    <div className="space-y-2">
+                    <div className="space-y-1.5">
                         {data.education.map((edu, index) => (
                             <div key={index} className="flex justify-between items-start">
                                 <div>
@@ -155,12 +161,12 @@ const ClassicTemplate = ({ data, accentColor }) => {
 
             {/* Skills */}
             {data.skills && data.skills.length > 0 && (
-                <section>
-                    <h2 className="text-[15px] font-semibold mb-2 uppercase tracking-wide" style={{ color: accentColor }}>
+                <section className="mb-2">
+                    <h2 className="text-[15px] font-semibold mb-1.5 uppercase tracking-wide" style={{ color: accentColor }}>
                         Core Skills
                     </h2>
 
-                    <div className="flex gap-x-4 gap-y-1 flex-wrap text-[13px] text-gray-700">
+                    <div className="flex gap-x-3.5 gap-y-0.5 flex-wrap text-[13px] text-gray-700">
                         {data.skills.map((skill, index) => (
                             <div key={index}>
                                 • {skill}

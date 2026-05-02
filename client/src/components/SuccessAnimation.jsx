@@ -28,7 +28,8 @@ const SuccessAnimation = ({ show, onComplete }) => {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="fixed inset-0 z-[100] flex items-center justify-center pointer-events-none bg-slate-900/10 backdrop-blur-[2px]"
+                    className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/10 backdrop-blur-[2px]"
+                    onClick={() => onComplete && onComplete()}
                 >
                     <motion.div
                         initial={{ scale: 0.5, y: 20, opacity: 0 }}
@@ -36,6 +37,7 @@ const SuccessAnimation = ({ show, onComplete }) => {
                         exit={{ scale: 0.9, opacity: 0 }}
                         transition={{ type: "spring", stiffness: 350, damping: 25 }}
                         className="bg-white px-8 py-6 rounded-[2rem] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] flex flex-col items-center border border-slate-100"
+                        onClick={(e) => e.stopPropagation()}
                     >
                         {animationData ? (
                             <div className="size-20 drop-shadow-sm">
