@@ -118,8 +118,19 @@ export const uploadResume=async(req,res)=>{
                 gpa:{type: String}
             }
         ],
+        certifications: [{type: String}],
+        achievements: [{type: String}],
+        languages: [
+            {
+                title: {type: String},
+                proficiency: {type: String, enum: ["Native", "Bilingual Proficiency", "Full Professional Proficiency", "Professional Working Proficiency", "Limited Working Proficiency", "Elementary Proficiency"]}
+            }
+        ],
 
         IMPORTANT: All date fields (start_date, end_date, graduation_date) MUST be in "YYYY-MM" format (e.g. "2023-12", "2024-08"). Convert any date like "Dec 2023" to "2023-12", "Aug 2024" to "2024-08", "2020" to "2020-01". If is_current is true, end_date should be empty string "".
+        For certifications, extract each certification as a single string including the certification name, issuing organization, etc. (e.g. "Business Intelligence & Analytics – NPTEL (IIT Madras)").
+        For achievements, extract each achievement as a single descriptive string.
+        For languages, extract the language name and proficiency level.
         }
 
         `

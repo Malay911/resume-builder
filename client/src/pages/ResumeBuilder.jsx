@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { ArrowLeftIcon, Briefcase, ChevronLeft, ChevronRight, DownloadIcon, EyeIcon, EyeOffIcon, FileText, FolderIcon, GraduationCap, Share2Icon, Sparkles, User, Save, Check, Layers, PanelRightClose, PanelRight } from 'lucide-react'
+import { ArrowLeftIcon, Briefcase, ChevronLeft, ChevronRight, DownloadIcon, EyeIcon, EyeOffIcon, FileText, FolderIcon, GraduationCap, Share2Icon, Sparkles, User, Save, Check, Layers, PanelRightClose, PanelRight, Award, Trophy, Globe2, Minus, Plus, Type } from 'lucide-react'
 import PersonalInfoForm from '../components/PersonalInfoForm'
 import ResumePreview from '../components/ResumePreview'
 import TemplateSelector from '../components/TemplateSelector'
@@ -10,6 +10,9 @@ import ExperienceForm from '../components/ExperienceForm'
 import EducationForm from '../components/EducationForm'
 import ProjectForm from '../components/ProjectForm'
 import SkillsForm from '../components/SkillsForm'
+import CertificationsForm from '../components/CertificationsForm'
+import AchievementsForm from '../components/AchievementsForm'
+import LanguagesForm from '../components/LanguagesForm'
 import { useSelector } from 'react-redux'
 import api from '../configs/api'
 import toast from 'react-hot-toast'
@@ -22,7 +25,8 @@ const ResumeBuilder = () => {
   const [resumeData, setResumeData] = useState({
     _id: '', title: '', personal_info: {}, professional_summary: '',
     experience: [], education: [], project: [], skills: [],
-    template: "classic", accent_color: "#3B82F6", public: false
+    certifications: [], achievements: [], languages: [],
+    template: "classic", accent_color: "#3B82F6", font_size: 1, public: false
   })
 
   const [isLoaded, setIsLoaded] = useState(false)
@@ -39,6 +43,9 @@ const ResumeBuilder = () => {
     { id: "education", name: "Education", icon: GraduationCap, description: "Degrees & certs" },
     { id: "projects", name: "Projects", icon: FolderIcon, description: "Key projects" },
     { id: "skills", name: "Skills", icon: Sparkles, description: "Technical & soft skills" },
+    { id: "certifications", name: "Certifications", icon: Award, description: "Courses & certs" },
+    { id: "achievements", name: "Achievements", icon: Trophy, description: "Awards & activities" },
+    { id: "languages", name: "Languages", icon: Globe2, description: "Languages known" },
   ]
 
   const activeSection = sections[activeSectionIndex]
@@ -145,6 +152,50 @@ const ResumeBuilder = () => {
             <TemplateSelector selectedTemplate={resumeData.template} onChange={(template) => setResumeData(prev => ({ ...prev, template }))} />
             <ColorPicker selectedColor={resumeData.accent_color} onChange={(color) => setResumeData(prev => ({ ...prev, accent_color: color }))} />
 
+            {/* Font Size Control */}
+            <div className="hidden sm:flex items-center gap-0.5 bg-neutral-50 rounded-lg border border-neutral-200 px-1 py-1">
+              <button
+                onClick={() => setResumeData(prev => ({ ...prev, font_size: Math.max(0.5, +(prev.font_size - 0.01).toFixed(2)) }))}
+                className="p-1 rounded hover:bg-neutral-200 text-neutral-500 hover:text-black transition-colors disabled:opacity-30"
+                disabled={resumeData.font_size <= 0.5}
+                title="Decrease font size"
+              >
+                <Minus className="size-3" />
+              </button>
+              <div className="flex items-center gap-0.5 px-0.5" title="Click to edit font size">
+                <Type className="size-3 text-neutral-400" />
+                <input
+                  type="text"
+                  value={Math.round(resumeData.font_size * 100)}
+                  onChange={(e) => {
+                    const val = e.target.value.replace(/[^0-9]/g, '')
+                    if (val === '') {
+                      setResumeData(prev => ({ ...prev, font_size: 0.5 }))
+                    } else {
+                      const num = Math.min(150, Math.max(50, parseInt(val)))
+                      setResumeData(prev => ({ ...prev, font_size: +(num / 100).toFixed(2) }))
+                    }
+                  }}
+                  onBlur={(e) => {
+                    const val = parseInt(e.target.value) || 100
+                    const clamped = Math.min(150, Math.max(50, val))
+                    setResumeData(prev => ({ ...prev, font_size: +(clamped / 100).toFixed(2) }))
+                  }}
+                  className="w-7 text-center text-[10px] font-semibold text-neutral-600 tabular-nums bg-transparent border-none outline-none p-0"
+                  style={{ border: 'none', boxShadow: 'none' }}
+                />
+                <span className="text-[10px] font-semibold text-neutral-600">%</span>
+              </div>
+              <button
+                onClick={() => setResumeData(prev => ({ ...prev, font_size: Math.min(1.5, +(prev.font_size + 0.01).toFixed(2)) }))}
+                className="p-1 rounded hover:bg-neutral-200 text-neutral-500 hover:text-black transition-colors disabled:opacity-30"
+                disabled={resumeData.font_size >= 1.5}
+                title="Increase font size"
+              >
+                <Plus className="size-3" />
+              </button>
+            </div>
+
             <div className="hidden sm:block w-px h-6 bg-neutral-200 mx-1" />
 
             <button onClick={() => setShowPreview(!showPreview)} className="btn-ghost p-2 rounded-lg hidden lg:flex items-center gap-1 text-xs" title={showPreview ? 'Hide preview' : 'Show preview'}>
@@ -161,7 +212,7 @@ const ResumeBuilder = () => {
 
       <div className="max-w-[1440px] mx-auto flex">
         {/* Left Sidebar — Step Navigation */}
-        <aside className="hidden md:flex flex-col w-56 shrink-0 p-4 pt-6 sticky top-[113px] h-[calc(100vh-113px)]">
+        <aside className="hidden md:flex flex-col w-56 shrink-0 p-4 pt-6 sticky top-[113px] h-[calc(100vh-113px)] overflow-y-auto">
           <nav className="space-y-1">
             {sections.map((section, index) => {
               const Icon = section.icon
@@ -209,7 +260,7 @@ const ResumeBuilder = () => {
             {/* Section header */}
             <div className="flex items-center gap-3 mb-6">
               <div className="flex items-center justify-center size-10 rounded-xl shadow-sm"
-              style={{ background: 'linear-gradient(135deg,#3b82f6,#8b5cf6)' }}>
+                style={{ background: 'linear-gradient(135deg,#3b82f6,#8b5cf6)' }}>
                 {React.createElement(activeSection.icon, { className: "size-5 text-white" })}
               </div>
               <div>
@@ -236,6 +287,15 @@ const ResumeBuilder = () => {
             )}
             {activeSection.id === "skills" && (
               <SkillsForm data={resumeData.skills} onChange={(data) => setResumeData(prev => ({ ...prev, skills: data }))} />
+            )}
+            {activeSection.id === "certifications" && (
+              <CertificationsForm data={resumeData.certifications} onChange={(data) => setResumeData(prev => ({ ...prev, certifications: data }))} />
+            )}
+            {activeSection.id === "achievements" && (
+              <AchievementsForm data={resumeData.achievements} onChange={(data) => setResumeData(prev => ({ ...prev, achievements: data }))} />
+            )}
+            {activeSection.id === "languages" && (
+              <LanguagesForm data={resumeData.languages} onChange={(data) => setResumeData(prev => ({ ...prev, languages: data }))} />
             )}
 
             {/* Step Navigation (Bottom) */}
@@ -278,7 +338,7 @@ const ResumeBuilder = () => {
             </button>
             {showPreview && (
               <div className="mt-4 animate-fadeIn">
-                <ResumePreview data={resumeData} template={resumeData.template} accentColor={resumeData.accent_color} />
+                <ResumePreview data={resumeData} template={resumeData.template} accentColor={resumeData.accent_color} fontSize={resumeData.font_size} />
               </div>
             )}
           </div>
@@ -288,14 +348,13 @@ const ResumeBuilder = () => {
              Always rendered in the DOM so #resume-preview exists for window.print().
              Visually collapsed via CSS (w-0 / overflow-hidden) when toggled off. */}
         <aside
-          className={`hidden lg:block shrink-0 p-4 pt-6 sticky top-[113px] h-[calc(100vh-113px)] overflow-y-auto transition-all duration-300 print:block print:w-auto print:p-0 print:static print:h-auto print:overflow-visible ${
-            showPreview
+          className={`hidden lg:block shrink-0 p-4 pt-6 sticky top-[113px] h-[calc(100vh-113px)] overflow-y-auto transition-all duration-300 print:block print:w-auto print:p-0 print:static print:h-auto print:overflow-visible ${showPreview
               ? 'w-[50%] opacity-100'
               : 'w-0 p-0 opacity-0 overflow-hidden pointer-events-none'
-          }`}
+            }`}
         >
           <div className="bg-white rounded-2xl border border-neutral-100 shadow-xs overflow-hidden">
-            <ResumePreview data={resumeData} template={resumeData.template} accentColor={resumeData.accent_color} />
+            <ResumePreview data={resumeData} template={resumeData.template} accentColor={resumeData.accent_color} fontSize={resumeData.font_size} />
           </div>
         </aside>
       </div>

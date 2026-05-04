@@ -42,7 +42,7 @@ const Preview = () => {
       </div>
 
       <div className='max-w-3xl mx-auto py-8 px-4'>
-        <ResumePreview data={resumeData} template={resumeData.template} accentColor={resumeData.accent_color} classes='py-4 bg-white shadow-sm' />
+        <ResumePreview data={resumeData} template={resumeData.template} accentColor={resumeData.accent_color} fontSize={resumeData.font_size} classes='py-4 bg-white shadow-sm' />
       </div>
 
       <SuccessAnimation show={showSuccess} onComplete={() => setShowSuccess(false)} />

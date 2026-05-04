@@ -4,23 +4,33 @@ import ClassicTemplate from './templates/ClassicTemplate'
 import MinimalImageTemplate from './templates/MinimalImageTemplate'
 import MinimalTemplate from './templates/MinimalTemplate'
 
-const ResumePreview = ({ data, template, accentColor, classes = "" }) => {
-    const renderTemplate = () => {
-        switch (template) {
-            case "modern": return <ModernTemplate data={data} accentColor={accentColor} />
-            case "minimal-image": return <MinimalImageTemplate data={data} accentColor={accentColor} />
-            case "minimal": return <MinimalTemplate data={data} accentColor={accentColor} />
-            default: return <ClassicTemplate data={data} accentColor={accentColor} />
-        }
+const ResumePreview = ({ data, template, accentColor, fontSize = 1, classes = "" }) => {
+  const renderTemplate = () => {
+    switch (template) {
+      case "modern": return <ModernTemplate data={data} accentColor={accentColor} />
+      case "minimal-image": return <MinimalImageTemplate data={data} accentColor={accentColor} />
+      case "minimal": return <MinimalTemplate data={data} accentColor={accentColor} />
+      default: return <ClassicTemplate data={data} accentColor={accentColor} />
     }
+  }
 
-    return (
-        <div className='w-full'>
-            <div id='resume-preview' className={"bg-white border border-slate-200 rounded-lg print:shadow-none print:border-none print:rounded-none " + classes}>
-                {renderTemplate()}
-            </div>
+  const scale = fontSize || 1
 
-            <style>{`
+  return (
+    <div className='w-full overflow-hidden'>
+      <div
+        id='resume-preview'
+        className={"bg-white border border-slate-200 rounded-lg print:shadow-none print:border-none print:rounded-none " + classes}
+        style={{
+          transform: `scale(${scale})`,
+          transformOrigin: 'top left',
+          width: `${100 / scale}%`,
+        }}
+      >
+        {renderTemplate()}
+      </div>
+
+      <style>{`
         @page { size: A4; margin: 0; }
         @media print {
           html, body { width: 210mm; height: 297mm; overflow: hidden; }
@@ -38,8 +48,8 @@ const ResumePreview = ({ data, template, accentColor, classes = "" }) => {
           }
         }
       `}</style>
-        </div>
-    )
+    </div>
+  )
 }
 
 export default ResumePreview
